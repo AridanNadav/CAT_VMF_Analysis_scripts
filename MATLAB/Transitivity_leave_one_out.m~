@@ -1,0 +1,80 @@
+
+
+% for sub=1:length(choices_files)
+        
+%          BR_fileID=dir([outpath '*' num2str(subjects(subjInd)) '_binary_ranking' '*.txt']);
+%          BR_data=Get_binary_ranking([outpath BR_fileID(1).name]);
+        
+        %get subject name
+        %! SubName=BR_data{sub,1}{1,1}{1};
+        % Get data from binary choices file
+        stim_left=BR_data{:,'StimNumLeft'};
+        stim_right=BR_data{:,'StimNumRight'};
+        response=cellstr(BR_data{:,'Response'});
+        num_of_trials=length(stim_left);
+        num_of_stimuli=length(unique([stim_left;stim_right]));
+        % convert response to num: 1=left, -1=right, 0=no_response
+        data_all.t=zeros(num_of_trials,1)+strcmp(response,'u')+strcmp(response,'i')*(-1);
+        
+        
+        %prepare for collie
+        data_all.X=zeros(num_of_trials,num_of_stimuli);
+        for trial=1:length(stim_left)
+            data_all.X(trial,stim_left(trial))=1;
+            data_all.X(trial,stim_right(trial))=-1;
+        end
+        
+        % remove no choice
+        data_all.X(data_all.t==0,:)=[];
+        data_all.t(data_all.t==0)=[];
+        
+        
+        num_of_valid_trials=length(data_all.t);
+        
+        
+        for leave_out=1:num_of_valid_trials
+            data_test.X=data_all.X(leave_out,:);
+            data_test.t=data_all.t(leave_out);
+            
+            data_train=data_all;
+            data_train.X(leave_out,:)=[];
+            data_train.t(leave_out)=[];
+            
+            
+            [num_of_samples,num_of_features]=size(data_train.X);
+            
+            T=zeros(num_of_features,num_of_features);
+            N=zeros(num_of_features,3);
+            
+            for i=1:num_of_samples
+                competing_stim=find(data_train.X(i,:)~=0);
+                T(competing_stim,competing_stim)=T(competing_stim,competing_stim)-1;
+                winner=(data_train.X(i,competing_stim))==data_train.t(i);
+                looser=(data_train.X(i,competing_stim))~=data_train.t(i);
+                N(competing_stim(winner),1)=N(competing_stim(winner),1)+1;
+                N(competing_stim(looser),2)=N(competing_stim(looser),2)+1;
+                N(competing_stim,3)=N(competing_stim,3)+1; % add one comprtition count
+            end
+            T(eye(num_of_features)==1)=0; % diagonal of 0
+            W_Colley=colley(T,N)';
+            model.W_Colley=W_Colley;
+            model.W_SimpleCount=N(:,1)./N(:,3);
+            
+            results.y_predicted_Colley=sign(data_test.X*model.W_Colley');
+            results.y_predicted_SimpleCount=sign(data_test.X*model.W_SimpleCount);
+            % Percent of correct predictions
+            accuracy_Colley(leave_out)=sum(results.y_predicted_Colley==data_test.t)/length(data_test.t);
+            accuracy_SimpleCount(leave_out)=sum(results.y_predicted_SimpleCount==data_test.t)/length(data_test.t);
+        end
+   
+        results.accuracy_Colley=mean(accuracy_Colley);
+        results.accuracy_SimpleCount=mean(accuracy_SimpleCount);
+%         completed=sub;
+%         remaining=2*length(choices_files)-completed;
+%         fprintf('\nFinished %i subjects, %.1f%% done. ',completed,100*completed/(completed+remaining));
+%    % end
+%     
+%     % save results to table
+%     ResultTable.SubjectName=results.SubjectName.';
+%     ResultTable.ColleyAcc=results.accuracy_Colley.';
+%     writetable(ResultTable,[OutputPath   categoryName '_' TypeD '_TransitivityResults'])

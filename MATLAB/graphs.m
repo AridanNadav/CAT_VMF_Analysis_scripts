@@ -1,0 +1,679 @@
+%% probe
+control_high=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'chooseGOvsNoGo'};
+patients_high=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'chooseGOvsNoGo'};
+markersize=60;
+figure
+hold on
+DataTable=sortrows(DataTable,{'sample__1isControl_2isPatients','chooseGOvsNoGo'})
+bar(0.5,nanmean(control_high),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(patients_high),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.54,mean(control_high),std(control_high)/sqrt(length(control_high)),'-k','LineWidth',2)
+errorbar(1.46,mean(patients_high),std(patients_high)/sqrt(length(patients_high)),'-k','LineWidth',2)
+
+scatter(repmat(0.46,length(control_high),1),control_high,markersize,'filled','MarkerFaceColor','k')
+
+patient_colors=[230, 0, 0;	60, 180, 75; 255,255,255;	255, 225, 25;	0, 130, 200;	245, 130, 48;	145, 30, 180;	70, 240, 240;	240, 50, 230;	170, 110, 40;	250, 190, 190]/255
+
+for i=[3 4 7 8 9 10 11]
+scatter(1.5,patients_high(i),markersize,'filled','MarkerFaceColor',patient_colors(i,:),'MarkerEdgeColor','k')
+end
+offset=0.015
+scatter(1.5-offset,patients_high(5),markersize,'filled','MarkerFaceColor',patient_colors(5,:),'MarkerEdgeColor','k')
+scatter(1.5+offset,patients_high(6),markersize,'filled','MarkerFaceColor',patient_colors(6,:),'MarkerEdgeColor','k')
+scatter(1.5-offset,patients_high(1),markersize,'filled','MarkerFaceColor',patient_colors(1,:),'MarkerEdgeColor','k')
+scatter(1.5+offset,patients_high(2),markersize,'filled','MarkerFaceColor',patient_colors(2,:),'MarkerEdgeColor','k')
+
+line([0 2.5],[.50 .50],'linewidth',3,'color','k','LineStyle','--')
+
+ax = gca;  %% get handle to current axes
+ax.XTick = [0.5 1.5 ];
+ax.YTick = [0:10:100];
+
+set(gca,'FontSize', 16)
+
+ax.XTickLabel = {'control','VMF patients'};
+title('Ratio of Go over No-Go choice')
+ylabel('choice ratio (%)','FontSize',16)
+ax.XLim = [0 2]
+ax.YLim = [0 110]
+
+
+%% Probe go no go high low
+
+conrolDataGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'HighChooseGOvsNoGo'};
+conrolDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'LowChooseGOvsNoGo'};
+
+patientsDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'HighChooseGOvsNoGo'};
+patientsDataGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'LowChooseGOvsNoGo'};
+
+figure
+hold on
+
+a=bar(0.5,nanmean(conrolDataGO),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(conrolDataNoGo),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+
+b=bar(3,nanmean(patientsDataGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(4,nanmean(patientsDataNoGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(conrolDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+errorbar(3,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+errorbar(4,nanmean(patientsDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+
+line([-1 5],[.50 .50],'linewidth',3,'color','k','LineStyle','--')
+
+ax = gca;  %% get handle to current axes
+ax.XTick = [0.5 1.5 3 4];
+ax.YTick = [0:.10:1.00];
+
+set(gca,'FontSize', 16)
+
+ax.XTickLabel = {'High','Low','High','Low'};
+title('Ratio of Go over No-Go choice')
+ylabel('choice ratio (%)','FontSize',16)
+ax.YLim = [0 1.10]
+
+
+legend([a b], 'control','VMF patients')
+
+
+%% intransitivity_ratio
+figure
+hold on
+
+conrolData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'intransitivity_ratio'};
+patientsData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'intransitivity_ratio'};
+
+bar(0.5,mean(conrolData),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+ax.XTick = [0.5 ,1.5 ];
+
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+
+title('Choice inconsistency during binary ranking')
+ylabel('intransitivity ratio','FontSize',16)
+
+%% accuracy_Colley_L1Out
+figure
+hold on
+
+conrolData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'accuracy_Colley_L1Out'};
+patientsData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'accuracy_Colley_L1Out'};
+
+bar(0.5,mean(conrolData),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+ax.YLim = [0 1.10]
+ax.XTick = [0.5 ,1.5 ];
+
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+
+title('Choice consistency during binary ranking','FontSize',16)
+ylabel('Correct prediction ratio','FontSize',16)
+
+
+%% reaction time during binary choices
+figure
+hold on
+
+conrolData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'BRmRTall'};
+patientsData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'BRmRTall'};
+
+bar(0.5,mean(conrolData),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+
+ax.XTick = [0.5 ,1.5 ];
+
+ax.YLim = [0 1600]
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+
+title('Reaction time during binary choices')
+ylabel('RT (ms) ','FontSize',16)
+
+%% corr of reaction time during binary choices and delta rank
+figure
+hold on
+
+conrolData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'BRrRTnDRank'};
+patientsData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'BRrRTnDRank'};
+
+bar(0.5,mean(conrolData),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+
+ax.XTick = [0.5 ,1.5 ];
+
+ax.YLim = [-1 1]
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+
+title('Mean correlation of RT and \Delta rank - binary choices','FontSize',16)
+ylabel('pearson r ','FontSize',16)
+
+
+
+%% reaction time transitive and intransitive choices
+figure
+hold on
+
+conrolData=DataTable{:,'BRmRTnotViol'};
+patientsData=DataTable{:,'BRmRTviol'};
+
+bar(0.5,mean(conrolData),'FaceColor',[0.75 0.75 0.75],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[0.25 0.25 0.25],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+ax.YLim = [0 1600]
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 ];
+ax.YTick = [0:200:1800 ];
+
+
+ax.XTickLabel = {'transitive ','intransitive '};
+
+ax.FontSize = 14;
+
+title('Reaction time during binary choices')
+ylabel('RT (ms) ','FontSize',16)
+
+
+%% BR RT  transitive  no transitive
+
+conrolDataGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'BRmRT'};
+patientsDataGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'BRmRT'};
+conrolDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'BRmRTviol'};
+patientsDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'BRmRTviol'};
+
+figure
+hold on
+
+a=bar(0.5,nanmean(conrolDataGO),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(conrolDataNoGo),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+
+b=bar(3,nanmean(patientsDataGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(4,nanmean(patientsDataNoGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(conrolDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+errorbar(3,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+errorbar(4,nanmean(patientsDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+ax.YLim =[0 2000];
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 3 4 ];
+
+
+ax.YTick = [0 :250:1600];
+
+ax.XTickLabel = {'transitive',' intransitive','transitive','intransitive'};
+ax.FontSize = 14;
+
+legend([a b], 'control','VMF patients')
+title('Reaction time of choice during binary ranking','FontSize',16)
+ylabel('RT (ms)','FontSize',16)
+%% sanity
+figure
+hold on
+
+conrolData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'NoGo_Sanity'};
+patientsData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'NoGo_Sanity'};
+
+
+bar(0.5,mean(conrolData),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+% ax.YLim = [0 1]
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 ];
+ax.YTick = [0:.10:1 ];
+
+
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+
+title('Preference consistency over time')
+ylabel('choice ratio of high vs. low value items  ','FontSize',16)
+
+
+%% recognition was 
+figure
+hold on
+
+conrolData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'recognitionNewOld'};
+patientsData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'recognitionNewOld'};
+
+
+bar(0.5,mean(conrolData),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+% ax.YLim = [0 1]
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 ];
+ax.YTick = [0:.10:1 ];
+
+
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+
+title('Memory of the experiment items (Old/New)')
+ylabel('ratio of correct item recognition','FontSize',16)
+
+%% recognition Go 
+figure
+hold on
+
+conrolData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'recognitionGoNoGo'};
+patientsData=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'recognitionGoNoGo'};
+
+
+bar(0.5,nanmean(conrolData),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(patientsData),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+
+errorbar(0.5,nanmean(conrolData),nanstd(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(patientsData),nanstd(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+ ax.YLim = [0 1]
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 ];
+ax.YTick = [0:.10:1 ];
+
+
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+
+title('Memory of the experiment items'' training condition (Go/NoGo)')
+ylabel('ratio of correct item recognition','FontSize',16)
+
+
+%% Probe RT  go no go high low
+
+C_GO_H=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_choseGo_rt_high'};
+C_GO_L=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_choseGo_rt_low'};
+C_NOGO_H=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_choseNoGo_rt_high'};
+C_NOGO_L=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_choseNoGo_rt_low'};
+P_GO_H=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_choseGo_rt_high'};
+P_GO_L=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_choseGo_rt_low'};
+P_NOGO_H=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_choseNoGo_rt_high'};
+P_NOGO_L=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_choseNoGo_rt_low'};
+    
+
+figure
+hold on
+
+a=bar(0.5,nanmean(C_GO_H),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(C_GO_L),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(2.5,nanmean(C_NOGO_H),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(3.5,nanmean(C_NOGO_L),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+
+b=bar(5.5,nanmean(P_GO_H),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(6.5,nanmean(P_GO_L),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(7.5,nanmean(P_NOGO_H),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(8.5,nanmean(P_NOGO_L),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(conrolDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+errorbar(3,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+errorbar(4,nanmean(patientsDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+ax.YLim =[0 1500];
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 3 4 ];
+
+
+ax.YTick = [0 :250:1500];
+
+ax.XTickLabel = {' Go',' NoGo','Go','NoGo'};
+
+ax.FontSize = 14;
+legend([a b], 'control','VMF patients')
+title('Reaction time of choice during probe')
+ylabel('RT (ms)','FontSize',16)
+%% Probe RT  go no go
+
+conrolDataGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_choseGo_rt'};
+patientsDataGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_choseGo_rt'};
+conrolDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_choseNoGo_rt'};
+patientsDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_choseNoGo_rt'};
+
+figure
+hold on
+
+a=bar(0.5,nanmean(conrolDataGO),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(conrolDataNoGo),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+
+b=bar(3,nanmean(patientsDataGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(4,nanmean(patientsDataNoGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(conrolDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+errorbar(3,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+errorbar(4,nanmean(patientsDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+ax.YLim =[0 1500];
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 3 4 ];
+
+
+ax.YTick = [0 :250:1500];
+
+ax.XTickLabel = {' Go',' NoGo','Go','NoGo'};
+
+ax.FontSize = 14;
+legend([a b], 'control','VMF patients')
+title('Reaction time of choice during probe')
+ylabel('RT (ms)','FontSize',16)
+
+%% Probe RT high low
+
+conrolDataGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probeRT_high'};
+patientsDataGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probeRT_high'};
+conrolDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probeRT_low'};
+patientsDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probeRT_low'};
+
+figure
+hold on
+
+a=bar(0.5,nanmean(conrolDataGO),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(conrolDataNoGo),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+
+b=bar(3,nanmean(patientsDataGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(4,nanmean(patientsDataNoGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(conrolDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+errorbar(3,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+errorbar(4,nanmean(patientsDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+ax.YLim =[0 1500];
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 3 4 ];
+
+
+ax.YTick = [0 :250:1500];
+
+ax.XTickLabel = {' High','Low','High','Low'};
+
+ax.FontSize = 14;
+legend([a b], 'control','VMF patients')
+title('Reaction time of choice during probe')
+ylabel('RT (ms)','FontSize',16)
+
+%% Probe RT  
+
+conrolDataGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_rt_all'};
+patientsDataGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_rt_all'};
+
+figure
+hold on
+
+a=bar(0.5,nanmean(conrolDataGO),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+
+b=bar(1.5,nanmean(patientsDataGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 ];
+
+ax.YLim = [0 1600]
+
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+title('Reaction time of choice during probe')
+ylabel('RT (ms)','FontSize',16)
+
+%% Mean Go-chioce reaction time and overall Go choice rate :
+
+conrolchoseGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'chooseGOvsNoGo'};
+conrolprobe_choseGo_rt=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probeRT_go'};
+
+patientschoseGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'chooseGOvsNoGo'};
+patientsprobe_choseGo_rt=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probeRT_go'};
+% conroltrErr_choseGo_rt=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'probe_choseNoGo_rt'};
+% patientstrErr=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'probe_choseNoGo_rt'};
+
+TomRT=	([858.3507031	943.3033735	826.9254545	785.41975	854.4179921	934.018252	860.3960159	675.7916206	603.1626563	850.2321344	825.5799605	810.7072727	810.1354365	875.0176068	684.8480556	656.4319922	825.2727559	752.1619531	710.8071094	757.6632157	747.3429804	784.2211382	840.8158498	844.6002372	725.8466008	803.9230496	934.1839007	891.5021481	833.5830986	722.2176056	827.6821831	843.7568794	818.7179861	766.7471127	688.4351408	941.0152482	876.9335211	868.5500714	875.0085417	673.3546528	740.3906294	885.5029927	724.9933566	842.395036	829.1282639	749.0528671	837.4388732	623.5682517	722.3523077]);	
+TomGo=	([0.98828125	0.526104418	0.557312253	0.545833333	0.405511811	0.597560976	0.920318725	0.624505929	0.4609375	0.577075099	0.928853755	0.391304348	0.892857143	0.551282051	0.742063492	0.8828125	0.484251969	0.44921875	0.59375	0.588235294	0.878431373	0.68699187	0.442687747	0.731225296	0.470355731	0.453900709	0.354609929	0.696296296	0.971830986	0.654929577	0.838028169	0.375886525	0.6875	0.492957746	0.436619718	0.432624113	0.577464789	0.564285714	0.763888889	0.840277778	0.685314685	0.525547445	0.888111888	0.561151079	0.875	0.881118881	0.528169014	0.888111888	0.587412587]);	
+figure
+hold on
+
+scatter(conrolprobe_choseGo_rt,conrolchoseGO,markersize,'filled','MarkerFaceColor','b')
+scatter(patientsprobe_choseGo_rt,patientschoseGo,markersize,'filled','MarkerFaceColor','r')
+
+
+% errorbar(conrolprobe_choseGo_rt,conrolchoseGO,conroltrErr_choseGo_rt,'horizontal','ob')
+% errorbar(patientsprobe_choseGo_rt,patientschoseGo,patientstrErr,'horizontal','or')
+
+
+lsLineb=lsline;
+set(lsLineb(2),'color','b')
+set(lsLineb(1),'color','r')
+
+ax = gca;  %% get handle to current axes
+% ax.XLim = [-2 2]
+
+
+ax.YLim = [0 1.1]
+ax.YTick = [0:.10:1];
+
+legend( 'control','VMF patients','r= -0.07','r= -0.66','Young, r= -0.20')
+
+ax.FontSize = 14;
+title('Mean Go-chioce reaction time and overall Go choice rate ')
+xlabel('RT (ms)','FontSize',16)
+ylabel('choice ratio (%)','FontSize',16)
+scatter(TomRT(2:end),TomGo(2:end),markersize,'filled','MarkerFaceColor','k')
+
+
+%% Reaction time for tone cue during training shadedErrorBar
+figfig=figure;
+hold on
+for i=1:29  
+ ContRT(i) =  mean(AllsubRT(1).RTvec(i,:));
+plot(	 AllsubRT(1).RTvec(i,:)	,'-b')
+end
+
+for i=1:11
+plot(	 AllsubRT(2).RTvec(i,:)	,'-r')
+end
+'lineprops',{'r-o','markerfacecolor','r'}
+
+
+shadedErrorBar(	(1:189),allsubs(1).meanRT(1,:),	allsubs(1).meanRT(2,:)	,'lineprops',{'-b','markerfacecolor',[0,0,1]})
+shadedErrorBar(	(1:189),allsubs(2).meanRT(1,:), allsubs(2).meanRT(2,:)	,'lineprops',{'-r','markerfacecolor',[1,0,0]})
+
+
+legend('control','VMF patients' ,'Location','northwest')
+
+
+ax = gca;  %% get handle to current axes
+ax.XTick =1:12:189;
+ax.XTickLabel =    {'1'   '2'   '3'   '4' '5' '6' '7' '8' '9' '10' '11' '12' '13' '14' '15' '16'};
+
+ax.FontSize = 14;
+
+title('Reaction time for tone cue during training')
+ylabel('RT (ms)','FontSize',16)
+xlabel('Run','FontSize',16)
+
+close(figfig)
+
+%% Reaction time for tone cue during training 
+conrolDataGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'trainingRT'};
+patientsDataGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'trainingRT'};
+figure
+hold on
+
+bar(0.5,nanmean(conrolDataGO),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(patientsDataGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+ax.YLim =[0 1600];
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 ];
+
+
+ax.YTick = [0 :250:1500];
+
+ax.XTickLabel = {'control','VMF patients'};
+
+ax.FontSize = 14;
+title('Reaction time for tone cue during training')
+ylabel('RT (ms)','FontSize',16)
+
+
+%%
+conrolDataGO=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'trainingRT_H'};
+patientsDataGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'trainingRT_H'};
+conrolDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==1,'trainingRT_L'};
+patientsDataNoGo=DataTable{DataTable{:,'sample__1isControl_2isPatients'}==2,'trainingRT_L'};
+
+figure
+hold on
+
+a=bar(0.5,nanmean(conrolDataGO),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,nanmean(conrolDataNoGo),'FaceColor',[0 0 1],'EdgeColor',[0 0 0],'LineWidth',2)
+
+b=bar(3,nanmean(patientsDataGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(4,nanmean(patientsDataNoGo),'FaceColor',[1 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,nanmean(conrolDataGO),nanstd(conrolDataGO)/sqrt(length(conrolDataGO)),'-k','LineWidth',2)
+errorbar(1.5,nanmean(conrolDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+errorbar(3,nanmean(patientsDataGo),nanstd(patientsDataGo)/sqrt(length(patientsDataGo)),'-k','LineWidth',2)
+errorbar(4,nanmean(patientsDataNoGo),nanstd(patientsDataNoGo)/sqrt(length(patientsDataNoGo)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+ax.YLim =[0 1500];
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 3 4 ];
+
+
+ax.YTick = [0 :250:1500];
+
+ax.XTickLabel = {' High','Low','High','Low'};
+
+ax.FontSize = 14;
+legend([a b], 'control','VMF patients')
+title('Reaction time of choice during probe')
+ylabel('RT (ms)','FontSize',16)
+
+%% RT high low BR
+figure
+hold on
+
+conrolData=DataTable{:,'probe_rt_high'};
+patientsData=DataTable{:,'probe_rt_low'};
+
+bar(0.5,mean(conrolData),'FaceColor',[0.75 0.75 0.75],'EdgeColor',[0 0 0],'LineWidth',2)
+bar(1.5,mean(patientsData),'FaceColor',[0.25 0.25 0.25],'EdgeColor',[0 0 0],'LineWidth',2)
+
+errorbar(0.5,mean(conrolData),std(conrolData)/sqrt(length(conrolData)),'-k','LineWidth',2)
+errorbar(1.5,mean(patientsData),std(patientsData)/sqrt(length(patientsData)),'-k','LineWidth',2)
+
+
+ax = gca;  %% get handle to current axes
+
+ax.YLim = [0 1600]
+% ax.XLim = [-2 2]
+
+ax.XTick = [0.5 ,1.5 ];
+ax.YTick = [0:200:1800 ];
+
+
+ax.XTickLabel = {'High value ','Low value'};
+
+ax.FontSize = 14;
+
+title('Reaction time during binary choices')
+ylabel('RT (ms) ','FontSize',16)
+

@@ -1,0 +1,28 @@
+
+control_high=[49.88312295	75.69444444	100	61.14718615	48.61111111	62.26525822	59.05742145	59.65838509	65.99765258	51.41865687	90.27777778	56.04395604	64.58333333	52.00040825	46.85054773	55.55555556	85.41666667	56.24467178	47.48490946	51.67253521	52.81690141	42.48015873	55.27162978	57.04225352	52.08333333	65.2917505	47.22222222	41.09299517	58.33333333	56.12745098];
+patients_high=sort([84.47686117	59.47769953	56.33802817	64.58752515	39.33457711	50.72463768	30.59701493	48.16901408	48.11871227	29.991715	41.18740219]);
+markersize=60;
+figure
+hold on
+
+bar(0.5,mean(control_high))
+bar(1.5,mean(patients_high))
+
+errorbar(0.515,mean(control_high),std(control_high)/sqrt(length(control_high)))
+errorbar(1.5,mean(patients_high),std(patients_high)/sqrt(length(patients_high)))
+
+scatter(repmat(0.485,length(control_high),1),control_high,markersize,'filled','MarkerFaceColor','k')
+
+patient_colors=[230, 0, 0;	60, 180, 75; 255,255,255;	255, 225, 25;	0, 130, 200;	245, 130, 48;	145, 30, 180;	70, 240, 240;	240, 50, 230;	170, 110, 40;	250, 190, 190]/255
+
+for i=[3 4 7 8 9 10 11]
+scatter(1.5,patients_high(i),markersize,'filled','MarkerFaceColor',patient_colors(i,:),'MarkerEdgeColor','k')
+end
+offset=0.015
+scatter(1.5-offset,patients_high(5),markersize,'filled','MarkerFaceColor',patient_colors(5,:),'MarkerEdgeColor','k')
+scatter(1.5+offset,patients_high(6),markersize,'filled','MarkerFaceColor',patient_colors(6,:),'MarkerEdgeColor','k')
+scatter(1.5-offset,patients_high(1),markersize,'filled','MarkerFaceColor',patient_colors(1,:),'MarkerEdgeColor','k')
+scatter(1.5+offset,patients_high(2),markersize,'filled','MarkerFaceColor',patient_colors(2,:),'MarkerEdgeColor','k')
+
+line([0 2],[50 50],'linewidth',3,'color','k','LineStyle')
+

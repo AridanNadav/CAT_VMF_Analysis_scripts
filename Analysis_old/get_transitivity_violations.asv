@@ -1,0 +1,22 @@
+% get_transitivity_violations
+
+
+for subjInd=1:length(subjects)
+
+fileID=dir([outpath '*' num2str(subjects(subjInd)) '_ItemRankingResults' '*']);
+subdata=Get_ItemRankingResults ([outpath fileID(1).name]);
+SampleSummeryTable{SampleSummeryTable{:,'sub'}==subjects(subjInd),'Colley_std'}=std(subdata{:,'Rank'});
+
+
+
+fileID=dir([outpath '*' num2str(subjects(subjInd)) '_stopGoList_allstim_order' '*']);
+
+
+
+
+
+
+SampleSummeryTable{SampleSummeryTable{:,'sub'}==subjects(subjInd),'transitivity_violations'}=std(subdata{:,'Rank'})
+
+
+end
